@@ -59,5 +59,46 @@ namespace GemHuntersGame
             }
         }
     }
+    // Cell class
+    public class Cell
+    {
+        public string Occupant { get; set; }
 
+        public Cell(string occupant)
+        {
+            Occupant = occupant;
+        }
+    }
+    // Board class
+    public class Board
+    {
+        public Cell[,] Grid { get; }
+        public Board()
+        {
+            Grid = new Cell[6, 6];
+            // Initialize the board with empty cells
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    Grid[i, j] = new Cell("-");
+                }
+            }
+            // Place players on the board
+            Grid[0, 0].Occupant = "P1";
+            Grid[5, 5].Occupant = "P2";
+        }
+        // void Display 
+        public void Display()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    Console.Write(Grid[i, j].Occupant + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
 }
