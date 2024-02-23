@@ -100,5 +100,76 @@ namespace GemHuntersGame
                 Console.WriteLine();
             }
         }
+        // public class for move with switch condition 
+
+        public bool IsValidMove(Player player, char direction)
+        {
+            switch (direction)
+            {
+                case 'U': //UP
+                    return player.Position.Y > 0 && Grid[player.Position.Y - 1, player.Position.X].Occupant != "O";
+                case 'D'://Down
+                    return player.Position.Y < 5 && Grid[player.Position.Y + 1, player.Position.X].Occupant != "O";
+                case 'L'://Left
+                    return player.Position.X > 0 && Grid[player.Position.Y, player.Position.X - 1].Occupant != "O";
+                case 'R'://Right
+                    return player.Position.X < 5 && Grid[player.Position.Y, player.Position.X + 1].Occupant != "O";
+                default:
+                    return false;
+            }
+        }
+        public void CollectGem(Player player)
+        {
+            if (Grid[player.Position.Y, player.Position.X].Occupant == "G")
+            {
+                player.GemCount++;
+                Grid[player.Position.Y, player.Position.X].Occupant = "-";
+            }
+        }
+    }
+    // Game class
+    public class Game
+    {
+        private readonly Board _board;
+        private readonly Player _player1;
+        private readonly Player _player2;
+        private Player _currentTurn;
+        private int _totalTurns;
+        public Game()
+        {
+            _board = new Board();
+            _player1 = new Player("P1", new Position(0, 0));
+            _player2 = new Player("P2", new Position(5, 5)); // Fixed player 2 position
+            _currentTurn = _player1;
+            _totalTurns = 0;
+            InitializeBoard();
+        }
+        private void InitializeBoard()
+        {
+            Random rand = new Random();
+
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    if (rand.Next(0, 5) == 0 && _board.Grid[i, j].Occupant == "-")
+                    {
+                        _board.Grid[i, j].Occupant = "G";
+                    }
+                }
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    if (rand.Next(0, 6) == 0 && _board.Grid[i, j].Occupant == "-")
+                    {
+                        _board.Grid[i, j].Occupant = "O";
+                    }
+                }
+            }
+        }
+
     }
 }
