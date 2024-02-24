@@ -1,8 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-// Comment out because its by default created
-// Console.WriteLine("Hello, World!");
-
+﻿
 //Declearing namespace
+using System.Numerics;
+
 namespace GemHuntersGame
 {
     // public class named "Position"
@@ -37,26 +36,33 @@ namespace GemHuntersGame
 
         //method named Move within the Player class.
 
-        public void Move(char direction)
+        public void Move(string direction)
         {
+            var position = Position;
+            var x = position.X;
+            var y = position.Y;
+
             switch (direction)
             {
-                case 'U':
-                    Position = new Position(Position.X, Position.Y - 1);
+                case "U": //UP
+                    x--;
+                    if (x < 0) x = 0;
                     break;
-                case 'D':
-                    Position = new Position(Position.X, Position.Y + 1);
+                case "D"://Down
+                    x++;
+                    if (x > 5) x = 5;
                     break;
-                case 'L':
-                    Position = new Position(Position.X - 1, Position.Y);
+                case "L"://Left
+                    y--;
+                    if (y < 0) y = 0;
                     break;
-                case 'R':
-                    Position = new Position(Position.X + 1, Position.Y);
-                    break;
-                default:
-                    Console.WriteLine("Invalid direction!");
+                case "R"://Right
+                    y++;
+                    if (y > 5) y = 5;
                     break;
             }
+
+            Position = new Position(x, y);
         }
     }
     // Cell class
@@ -102,29 +108,51 @@ namespace GemHuntersGame
         }
         // public class for move with switch condition 
 
-        public bool IsValidMove(Player player, char direction)
+        public bool IsValidMove(Player player, string direction)
         {
+            var position = player.Position;
+            var x = position.X;
+            var y = position.Y; 
+
             switch (direction)
             {
-                case 'U': //UP
-                    return player.Position.Y > 0 && Grid[player.Position.Y - 1, player.Position.X].Occupant != "O";
-                case 'D'://Down
-                    return player.Position.Y < 5 && Grid[player.Position.Y + 1, player.Position.X].Occupant != "O";
-                case 'L'://Left
-                    return player.Position.X > 0 && Grid[player.Position.Y, player.Position.X - 1].Occupant != "O";
-                case 'R'://Right
-                    return player.Position.X < 5 && Grid[player.Position.Y, player.Position.X + 1].Occupant != "O";
+                case "U": //UP
+                    x--;
+                    if (x < 0) x = 0;
+                    break;
+                case "D"://Down
+                    x++;
+                    if (x > 5) x = 5;
+                    break;
+                case "L"://Left
+                    y--;
+                    if (y < 0) y = 0;
+                    break;
+                case "R"://Right
+                    y++;
+                    if (y > 5) y = 5;
+                    break;
                 default:
                     return false;
             }
+
+            bool isValidMove = Grid[x, y].Occupant == "O" ? false : true;
+
+            if (isValidMove)
+            {
+                Grid[position.X, position.Y].Occupant = "-";
+            }
+
+            return isValidMove;
         }
         public void CollectGem(Player player)
         {
-            if (Grid[player.Position.Y, player.Position.X].Occupant == "G")
+            if (Grid[player.Position.X, player.Position.Y].Occupant == "G")
             {
                 player.GemCount++;
-                Grid[player.Position.Y, player.Position.X].Occupant = "-";
+               
             }
+            Grid[player.Position.X, player.Position.Y].Occupant = player.Name;
         }
     }
     // Game class
@@ -177,7 +205,7 @@ namespace GemHuntersGame
                 Console.WriteLine($"Turn {_totalTurns + 1} - {_currentTurn.Name}'s turn:");
                 _board.Display();
                 Console.Write("Enter direction (U/D/L/R): ");
-                char direction = char.ToUpper(Console.ReadKey().KeyChar);
+                string direction = Console.ReadLine().ToUpper() ?? "";
                 Console.WriteLine();
                 if (_board.IsValidMove(_currentTurn, direction))
                 {
