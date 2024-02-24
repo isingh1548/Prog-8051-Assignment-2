@@ -170,6 +170,68 @@ namespace GemHuntersGame
                 }
             }
         }
-
+        public void Start()
+        {
+            while (!IsGameOver())
+            {
+                Console.WriteLine($"Turn {_totalTurns + 1} - {_currentTurn.Name}'s turn:");
+                _board.Display();
+                Console.Write("Enter direction (U/D/L/R): ");
+                char direction = char.ToUpper(Console.ReadKey().KeyChar);
+                Console.WriteLine();
+                if (_board.IsValidMove(_currentTurn, direction))
+                {
+                    _currentTurn.Move(direction);
+                    _board.CollectGem(_currentTurn);
+                    //Added new display message
+                    Console.WriteLine($"Player {_currentTurn.Name} collected a gem!");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid move!");
+                }
+                _totalTurns++;
+                SwitchTurn();
+            }
+            AnnounceWinner();
+        }
+        private void SwitchTurn()
+        {
+            _currentTurn = _currentTurn == _player1 ? _player2 : _player1;
+        }
+        private bool IsGameOver()
+        {
+            // Decleared total turn 30 each player has 15 turns
+            return _totalTurns >= 30;
+        }
+        private void AnnounceWinner()
+        {
+            Console.WriteLine("Game Over!");
+            Console.WriteLine($"Player 1 collected {_player1.GemCount} gems.");
+            Console.WriteLine($"Player 2 collected {_player2.GemCount} gems.");
+            if (_player1.GemCount > _player2.GemCount)
+            {
+                Console.WriteLine("Player 1 wins!");
+            }
+            else if (_player1.GemCount < _player2.GemCount)
+            {
+                Console.WriteLine("Player 2 wins!");
+            }
+            else
+            {
+                Console.WriteLine("It's a tie!");
+            }
+        }
     }
+    // Declared main method
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Game game = new Game();
+            game.Start();
+        }
+    }
+
 }
